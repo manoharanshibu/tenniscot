@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, FlatList, StyleSheet, SafeAreaView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Home } from 'lucide-react-native';
+import { Chrome as Home } from 'lucide-react-native';
 import PlayerCard from '@/components/PlayerCard';
 import SearchBar from '@/components/SearchBar';
 import { players } from '@/data/players';
