@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, FlatList, StyleSheet, SafeAreaView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Home } from 'lucide-react-native';
 import PlayerCard from '@/components/PlayerCard';
 import SearchBar from '@/components/SearchBar';
 import { players } from '@/data/players';
 import { Player } from '@/types/Player';
 
-export default function PlayersScreen() {
+export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredPlayers = useMemo(() => {
@@ -35,8 +36,9 @@ export default function PlayersScreen() {
         colors={['#059669', '#047857']}
         style={styles.header}
       >
-        <Text style={styles.headerTitle}>Tennis Scotland</Text>
-        <Text style={styles.headerSubtitle}>Player Directory</Text>
+        <Home size={32} color="#ffffff" style={styles.headerIcon} />
+        <Text style={styles.headerTitle}>Home</Text>
+        <Text style={styles.headerSubtitle}>Tennis Scotland Player Directory</Text>
       </LinearGradient>
 
       <View style={styles.content}>
@@ -75,6 +77,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
+    alignItems: 'center',
+  },
+  headerIcon: {
+    marginBottom: 8,
   },
   headerTitle: {
     fontSize: 28,

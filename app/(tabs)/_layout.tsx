@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { Users, Trophy, Calendar, User } from 'lucide-react-native';
+import { Home, TrendingUp, Target, Bell, Settings } from 'lucide-react-native';
 
 export default function TabLayout() {
   return (
@@ -25,36 +25,45 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Players',
+          title: 'Home',
           tabBarIcon: ({ size, color }) => (
-            <Users size={size} color={color} />
+            <Home size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="tournaments"
+        name="performance"
         options={{
-          title: 'Tournaments',
+          title: 'Performance',
           tabBarIcon: ({ size, color }) => (
-            <Trophy size={size} color={color} />
+            <TrendingUp size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="schedule"
+        name="scores"
         options={{
-          title: 'Schedule',
+          title: 'Scores',
           tabBarIcon: ({ size, color }) => (
-            <Calendar size={size} color={color} />
+            <Target size={size} color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="notifications"
         options={{
-          title: 'Profile',
+          title: 'Notifications',
           tabBarIcon: ({ size, color }) => (
-            <User size={size} color={color} />
+            <Bell size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ size, color }) => (
+            <Settings size={size} color={color} />
           ),
         }}
       />
