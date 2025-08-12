@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import SimplePicker from 'react-simple-picker';
 
 interface ScoreSelectorProps {
   value: number;
@@ -27,23 +27,21 @@ export default function ScoreSelector({
     return 'Outstanding';
   };
 
+  const options = scores.map(score => ({
+    label: `${score} - ${getScoreLabel(score)}`,
+    value: score
+  }));
+
   return (
     <View style={styles.container}>
       <View style={[styles.pickerContainer, { borderColor: color }]}>
-        <Picker
+        <SimplePicker
+          options={options}
           selectedValue={value}
-          onValueChange={(itemValue) => onChange(itemValue)}
+          onValueChange={(selectedValue) => onChange(selectedValue)}
           style={styles.picker}
-          itemStyle={styles.pickerItem}
-        >
-          {scores.map((score) => (
-            <Picker.Item
-              key={score}
-              label={`${score} - ${getScoreLabel(score)}`}
-              value={score}
-            />
-          ))}
-        </Picker>
+          placeholder="Select a score..."
+        />
       </View>
       
       <View style={styles.selectedScoreContainer}>
@@ -73,14 +71,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#f9fafb',
     marginBottom: 16,
-    overflow: 'hidden',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   picker: {
-    height: 150,
-  },
-  pickerItem: {
     fontSize: 16,
-    fontWeight: '500',
+    color: '#111827',
   },
   selectedScoreContainer: {
     flexDirection: 'row',
