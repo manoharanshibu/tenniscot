@@ -4,11 +4,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Chrome as Home } from 'lucide-react-native';
 import PlayerCard from '@/components/PlayerCard';
 import SearchBar from '@/components/SearchBar';
+import PlayerEvaluationModal from '@/components/PlayerEvaluationModal';
 import { players } from '@/data/players';
 import { Player } from '@/types/Player';
 
 export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const filteredPlayers = useMemo(() => {
     if (!searchQuery.trim()) return players;
@@ -20,13 +23,29 @@ export default function HomeScreen() {
     );
   }, [searchQuery]);
 
+  const handlePlayerPress = (player: Player) => {
+    setSelectedPlayer(player);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    setSelectedPlayer(null);
+  };
+
+  const handleSaveEvaluation = (playerId: string, tennisScore: number, fitnessScore: number) => {
+    // Here you would typically save the evaluation to your backend or local storage
+    console.log('Saving evaluation for player:', playerId, {
+      tennisScore,
+      fitnessScore,
+    });
+    // You could also update the player data with the new scores
+  };
+
   const renderPlayer = ({ item }: { item: Player }) => (
     <PlayerCard 
       player={item} 
-      onPress={() => {
-        // Handle player selection - could navigate to player details
-        console.log('Selected player:', item.name);
-      }}
+      onPress={() => handlePlayerPress(item)}
     />
   );
 
@@ -62,6 +81,13 @@ export default function HomeScreen() {
           contentContainerStyle={styles.listContainer}
         />
       </View>
+
+      <PlayerEvaluationModal
+        visible={modalVisible}
+        player={selectedPlayer}
+        onClose={handleCloseModal}
+        onSave={handleSaveEvaluation}
+      />
     </SafeAreaView>
   );
 }
