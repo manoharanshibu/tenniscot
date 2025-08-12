@@ -10,9 +10,9 @@
   },
   "dependencies": {
     "@lucide/lab": "^0.1.2",
+    "@react-native-picker/picker": "^2.11.1",
     "@react-navigation/bottom-tabs": "^7.2.1",
     "@react-navigation/native": "^7.0.15",
-    "lucide-react-native": "^0.475.0",
     "expo": "^53.0.20",
     "expo-blur": "^14.1.5",
     "expo-camera": "^16.1.11",
@@ -28,6 +28,7 @@
     "expo-symbols": "^0.4.5",
     "expo-system-ui": "^5.0.10",
     "expo-web-browser": "^14.2.0",
+    "lucide-react-native": "^0.475.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-native": "0.79.5",

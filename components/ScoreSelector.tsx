@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 
 interface ScoreSelectorProps {
   value: number;
@@ -28,26 +29,21 @@ export default function ScoreSelector({
 
   return (
     <View style={styles.container}>
-      <View style={styles.scoresContainer}>
-        {scores.map((score) => (
-          <TouchableOpacity
-            key={score}
-            style={[
-              styles.scoreButton,
-              value === score && { backgroundColor: color },
-            ]}
-            onPress={() => onChange(score)}
-          >
-            <Text
-              style={[
-                styles.scoreText,
-                value === score && styles.selectedScoreText,
-              ]}
-            >
-              {score}
-            </Text>
-          </TouchableOpacity>
-        ))}
+      <View style={[styles.pickerContainer, { borderColor: color }]}>
+        <Picker
+          selectedValue={value}
+          onValueChange={(itemValue) => onChange(itemValue)}
+          style={styles.picker}
+          itemStyle={styles.pickerItem}
+        >
+          {scores.map((score) => (
+            <Picker.Item
+              key={score}
+              label={`${score} - ${getScoreLabel(score)}`}
+              value={score}
+            />
+          ))}
+        </Picker>
       </View>
       
       <View style={styles.selectedScoreContainer}>
@@ -58,11 +54,11 @@ export default function ScoreSelector({
       </View>
       
       <View style={styles.scaleLabels}>
-        <Text style={styles.scaleLabel}>Poor</Text>
-        <Text style={styles.scaleLabel}>Fair</Text>
-        <Text style={styles.scaleLabel}>Good</Text>
-        <Text style={styles.scaleLabel}>Excellent</Text>
-        <Text style={styles.scaleLabel}>Outstanding</Text>
+        <Text style={styles.scaleLabel}>1-3: Poor</Text>
+        <Text style={styles.scaleLabel}>4-5: Fair</Text>
+        <Text style={styles.scaleLabel}>6-7: Good</Text>
+        <Text style={styles.scaleLabel}>8-9: Excellent</Text>
+        <Text style={styles.scaleLabel}>10: Outstanding</Text>
       </View>
     </View>
   );
@@ -72,34 +68,25 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: 8,
   },
-  scoresContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 16,
-  },
-  scoreButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#f3f4f6',
-    justifyContent: 'center',
-    alignItems: 'center',
+  pickerContainer: {
     borderWidth: 2,
-    borderColor: '#e5e7eb',
+    borderRadius: 12,
+    backgroundColor: '#f9fafb',
+    marginBottom: 16,
+    overflow: 'hidden',
   },
-  scoreText: {
+  picker: {
+    height: 150,
+  },
+  pickerItem: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#374151',
-  },
-  selectedScoreText: {
-    color: '#ffffff',
+    fontWeight: '500',
   },
   selectedScoreContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12,
+    paddingHorizontal: 4,
   },
   selectedScoreLabel: {
     fontSize: 14,
@@ -112,8 +99,10 @@ const styles = StyleSheet.create({
   },
   scaleLabels: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     paddingHorizontal: 4,
+    gap: 8,
   },
   scaleLabel: {
     fontSize: 12,
