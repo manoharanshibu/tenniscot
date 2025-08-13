@@ -247,7 +247,6 @@ export default function PlayerEvaluationModal({
               />
             </View>
             </View>
-          </View>
         </ScrollView>
 
         {/* Action Buttons */}
