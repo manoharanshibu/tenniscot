@@ -7,10 +7,14 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
+  TextInput,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { X, Star, TrendingUp, Activity } from 'lucide-react-native';
 import { Player } from '@/types/Player';
 import ScoreSelector from './ScoreSelector';
+import { submitPlayerEvaluation, EvaluationData } from '@/services/api';
 
 interface PlayerEvaluationModalProps {
   visible: boolean;
@@ -25,20 +29,63 @@ export default function PlayerEvaluationModal({
   onClose,
   onSave,
 }: PlayerEvaluationModalProps) {
-  const [tennisScore, setTennisScore] = useState(5);
-  const [fitnessScore, setFitnessScore] = useState(5);
+  const [tennisAthl, setTennisAthl] = useState(5);
+  const [tennisHead, setTennisHead] = useState(5);
+  const [tennisHeart, setTennisHeart] = useState(5);
+  const [fitnessAthl, setFitnessAthl] = useState(5);
+  const [fitnessHead, setFitnessHead] = useState(5);
+  const [fitnessHeart, setFitnessHeart] = useState(5);
+  const [comments, setComments] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (player) {
-      onSave(player.id, tennisScore, fitnessScore);
-      onClose();
+      setIsSubmitting(true);
+      
+      const evaluationData: EvaluationData = {
+        'Player-ID': `P${player.id}`,
+        'Session-Id': `S${Date.now()}`, // Generate unique session ID
+        'Centre_ID': 'SC_3838',
+        'Coach_ID': 'C3838',
+        'Comments': comments || 'No additional comments provided',
+        'Ft_Athl': fitnessAthl,
+        'Ft_Head': fitnessHead,
+        'Ft_Heart': fitnessHeart,
+        'Tn_Athl': tennisAthl,
+        'Tn_head': tennisHead,
+        'Tn_Heart': tennisHeart,
+      };
+
+      const success = await submitPlayerEvaluation(evaluationData);
+      
+      setIsSubmitting(false);
+      
+      if (success) {
+        Alert.alert(
+          'Success',
+          'Player evaluation submitted successfully!',
+          [{ text: 'OK', onPress: handleClose }]
+        );
+        onSave(player.id, (tennisAthl + tennisHead + tennisHeart) / 3, (fitnessAthl + fitnessHead + fitnessHeart) / 3);
+      } else {
+        Alert.alert(
+          'Error',
+          'Failed to submit evaluation. Please try again.',
+          [{ text: 'OK' }]
+        );
+      }
     }
   };
 
   const handleClose = () => {
     // Reset scores when closing
-    setTennisScore(5);
-    setFitnessScore(5);
+    setTennisAthl(5);
+    setTennisHead(5);
+    setTennisHeart(5);
+    setFitnessAthl(5);
+    setFitnessHead(5);
+    setFitnessHeart(5);
+    setComments('');
     onClose();
   };
 
@@ -109,36 +156,96 @@ export default function PlayerEvaluationModal({
           <View style={styles.evaluationSection}>
             <Text style={styles.sectionTitle}>Evaluation Scores</Text>
             
-            {/* Tennis Score */}
+            {/* Tennis Scores */}
             <View style={styles.scoreSection}>
               <View style={styles.scoreLabelContainer}>
                 <Star size={20} color="#f59e0b" />
                 <Text style={styles.scoreLabel}>Tennis Skills</Text>
               </View>
               <Text style={styles.scoreDescription}>
-                Rate technical skills, strategy, and court awareness
+                Rate different aspects of tennis performance
               </Text>
-              <ScoreSelector
-                value={tennisScore}
-                onChange={setTennisScore}
-                color="#f59e0b"
-              />
+              
+              <View style={styles.subScoreContainer}>
+                <Text style={styles.subScoreLabel}>Athletic (Tn_Athl)</Text>
+                <ScoreSelector
+                  value={tennisAthl}
+                  onChange={setTennisAthl}
+                  color="#f59e0b"
+                />
+              </View>
+              
+              <View style={styles.subScoreContainer}>
+                <Text style={styles.subScoreLabel}>Mental (Tn_head)</Text>
+                <ScoreSelector
+                  value={tennisHead}
+                  onChange={setTennisHead}
+                  color="#f59e0b"
+                />
+              </View>
+              
+              <View style={styles.subScoreContainer}>
+                <Text style={styles.subScoreLabel}>Heart/Passion (Tn_Heart)</Text>
+                <ScoreSelector
+                  value={tennisHeart}
+                  onChange={setTennisHeart}
+                  color="#f59e0b"
+                />
+              </View>
             </View>
 
-            {/* Fitness Score */}
+            {/* Fitness Scores */}
             <View style={styles.scoreSection}>
               <View style={styles.scoreLabelContainer}>
                 <Activity size={20} color="#dc2626" />
                 <Text style={styles.scoreLabel}>Fitness Level</Text>
               </View>
               <Text style={styles.scoreDescription}>
-                Rate endurance, agility, and physical conditioning
+                Rate different aspects of physical fitness
               </Text>
-              <ScoreSelector
-                value={fitnessScore}
-                onChange={setFitnessScore}
-                color="#dc2626"
+              
+              <View style={styles.subScoreContainer}>
+                <Text style={styles.subScoreLabel}>Athletic (Ft_Athl)</Text>
+                <ScoreSelector
+                  value={fitnessAthl}
+                  onChange={setFitnessAthl}
+                  color="#dc2626"
+                />
+              </View>
+              
+              <View style={styles.subScoreContainer}>
+                <Text style={styles.subScoreLabel}>Mental (Ft_Head)</Text>
+                <ScoreSelector
+                  value={fitnessHead}
+                  onChange={setFitnessHead}
+                  color="#dc2626"
+                />
+              </View>
+              
+              <View style={styles.subScoreContainer}>
+                <Text style={styles.subScoreLabel}>Heart/Endurance (Ft_Heart)</Text>
+                <ScoreSelector
+                  value={fitnessHeart}
+                  onChange={setFitnessHeart}
+                  color="#dc2626"
+                />
+              </View>
+            </View>
+
+            {/* Comments Section */}
+            <View style={styles.commentsSection}>
+              <Text style={styles.sectionTitle}>Comments</Text>
+              <TextInput
+                style={styles.commentsInput}
+                value={comments}
+                onChangeText={setComments}
+                placeholder="Add your evaluation comments here..."
+                placeholderTextColor="#9ca3af"
+                multiline
+                numberOfLines={4}
+                textAlignVertical="top"
               />
+            </View>
             </View>
           </View>
         </ScrollView>
@@ -148,8 +255,16 @@ export default function PlayerEvaluationModal({
           <TouchableOpacity style={styles.cancelButton} onPress={handleClose}>
             <Text style={styles.cancelButtonText}>Cancel</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-            <Text style={styles.saveButtonText}>Save Evaluation</Text>
+          <TouchableOpacity 
+            style={[styles.saveButton, isSubmitting && styles.saveButtonDisabled]} 
+            onPress={handleSave}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <ActivityIndicator size="small" color="#ffffff" />
+            ) : (
+              <Text style={styles.saveButtonText}>Save Evaluation</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
@@ -313,8 +428,39 @@ const styles = StyleSheet.create({
   scoreDescription: {
     fontSize: 14,
     color: '#6b7280',
-    marginBottom: 16,
+    marginBottom: 12,
     lineHeight: 20,
+  },
+  subScoreContainer: {
+    marginBottom: 16,
+  },
+  subScoreLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 8,
+  },
+  commentsSection: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    marginTop: 16,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  commentsInput: {
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    color: '#111827',
+    backgroundColor: '#f9fafb',
+    minHeight: 100,
   },
   actionButtons: {
     flexDirection: 'row',
@@ -349,5 +495,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#ffffff',
+  },
+  saveButtonDisabled: {
+    backgroundColor: '#9ca3af',
   },
 });
