@@ -1,4 +1,4 @@
-const API_ENDPOINT = 'https://5d7jeswgsk.execute-api.eu-west-2.amazonaws.com/uat';
+const API_ENDPOINT = '/api/evaluation';
 
 export interface EvaluationData {
   'Player-ID': string;
